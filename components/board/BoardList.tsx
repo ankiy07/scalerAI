@@ -33,23 +33,21 @@ const BoardList: React.FC<BoardListProps> = ({ list, index, cards, onAddCard, on
         <div
           {...provided.draggableProps}
           ref={provided.innerRef}
-          className={`kanban-list ${
-            snapshot.isDragging ? 'shadow-xl rotate-[2deg] scale-[1.02]' : ''
-          }`}
+          className={`kanban-list ${snapshot.isDragging ? 'shadow-2xl rotate-[2deg]' : ''}`}
         >
           {/* List Header */}
           <div
             {...provided.dragHandleProps}
-            className="px-4 pt-3.5 pb-2 flex items-center justify-between cursor-grab active:cursor-grabbing"
+            className="px-3.5 pt-3 pb-1.5 flex items-center justify-between cursor-grab active:cursor-grabbing"
           >
-            <h2 className="font-semibold text-[var(--text-primary)] text-[14px] tracking-tight truncate flex-1">
+            <h2 className="font-semibold text-[#f5f5f7] text-[13px] tracking-[-0.01em] truncate flex-1 py-0.5">
               {list.title}
             </h2>
             <div className="flex items-center gap-0.5">
-              <span className="text-[12px] font-medium text-[var(--text-tertiary)] tabular-nums mr-1">
+              <span className="text-[11px] font-medium text-[#636366] tabular-nums mr-1">
                 {cards.length}
               </span>
-              <button className="p-1 rounded-md hover:bg-black/[0.04] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] apple-transition">
+              <button className="p-1 rounded-md hover:bg-white/[0.06] text-[#636366] hover:text-[#a1a1a6] apple-transition">
                 <MoreHorizontal className="w-4 h-4" strokeWidth={2} />
               </button>
             </div>
@@ -61,8 +59,8 @@ const BoardList: React.FC<BoardListProps> = ({ list, index, cards, onAddCard, on
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className={`flex-1 overflow-y-auto px-2.5 py-1 min-h-[8px] apple-transition ${
-                  snapshot.isDraggingOver ? 'bg-[var(--accent)]/[0.03]' : ''
+                className={`flex-1 overflow-y-auto px-2 py-0.5 min-h-[4px] apple-transition ${
+                  snapshot.isDraggingOver ? 'bg-[#0a84ff]/[0.04]' : ''
                 }`}
               >
                 {cards.map((card, idx) => (
@@ -79,7 +77,7 @@ const BoardList: React.FC<BoardListProps> = ({ list, index, cards, onAddCard, on
           </Droppable>
 
           {/* List Footer */}
-          <div className="px-2.5 pb-2.5 pt-1">
+          <div className="px-2 pb-2 pt-0.5">
             {isAddingCard ? (
               <div className="space-y-2 animate-slide-up">
                 <textarea
@@ -93,27 +91,27 @@ const BoardList: React.FC<BoardListProps> = ({ list, index, cards, onAddCard, on
                       handleAddCard();
                     }
                   }}
-                  className="w-full p-2.5 rounded-xl border border-[var(--border-strong)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 outline-none text-[13px] text-[var(--text-primary)] bg-[var(--surface)] min-h-[68px] resize-none shadow-[var(--shadow-sm)] apple-transition"
+                  className="w-full p-2.5 rounded-xl border border-white/[0.1] focus:border-[#0a84ff] focus:ring-2 focus:ring-[#0a84ff]/20 outline-none text-[13px] text-[#f5f5f7] bg-[#2c2c2e] min-h-[60px] resize-none apple-transition placeholder-[#636366]"
                 />
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleAddCard}
-                    className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-3 py-1.5 rounded-lg font-medium text-[13px] apple-transition shadow-sm active:scale-95"
+                    className="bg-[#0a84ff] hover:bg-[#409cff] text-white px-3 py-1.5 rounded-lg font-medium text-[12px] apple-transition active:scale-95"
                   >
                     Add card
                   </button>
                   <button
                     onClick={() => setIsAddingCard(false)}
-                    className="p-1.5 rounded-lg hover:bg-black/[0.04] apple-transition"
+                    className="p-1.5 rounded-lg hover:bg-white/[0.06] apple-transition"
                   >
-                    <X className="w-4 h-4 text-[var(--text-tertiary)]" />
+                    <X className="w-4 h-4 text-[#636366]" />
                   </button>
                 </div>
               </div>
             ) : (
               <button
                 onClick={() => setIsAddingCard(true)}
-                className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-black/[0.03] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[13px] font-medium apple-transition"
+                className="w-full flex items-center gap-1.5 p-2 rounded-lg hover:bg-white/[0.04] text-[#636366] hover:text-[#a1a1a6] text-[13px] font-medium apple-transition"
               >
                 <Plus className="w-4 h-4" strokeWidth={2} />
                 <span>Add a card</span>

@@ -25,18 +25,16 @@ const BoardCard: React.FC<BoardCardProps> = ({ card, index, onClick }) => {
           ref={provided.innerRef}
           onClick={onClick}
           className={`kanban-card group ${
-            snapshot.isDragging
-              ? 'rotate-[3deg] shadow-xl !border-[var(--accent)]/30 scale-[1.03]'
-              : ''
+            snapshot.isDragging ? 'rotate-[2deg] shadow-2xl scale-[1.02]' : ''
           }`}
         >
           {/* Labels */}
           {card.labels && card.labels.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-2.5">
+            <div className="flex flex-wrap gap-1 mb-2">
               {card.labels.map((label: any, idx: number) => (
                 <div
                   key={idx}
-                  className="h-[6px] w-10 rounded-full apple-transition group-hover:h-4 group-hover:w-auto group-hover:px-2.5 group-hover:flex group-hover:items-center"
+                  className="h-[6px] w-10 rounded-full apple-transition group-hover:h-5 group-hover:w-auto group-hover:px-2 group-hover:flex group-hover:items-center"
                   style={{ backgroundColor: getLabelColor(label.color) }}
                   title={label.text}
                 >
@@ -48,29 +46,28 @@ const BoardCard: React.FC<BoardCardProps> = ({ card, index, onClick }) => {
             </div>
           )}
 
-          <h3 className="text-[13px] text-[var(--text-primary)] font-medium leading-snug mb-1 tracking-tight">
+          <h3 className="text-[13px] text-[#f5f5f7] font-medium leading-snug tracking-[-0.01em]">
             {card.title}
           </h3>
 
           {/* Badges */}
           {(card.description || totalChecklistItems > 0 || card.dueDate) && (
-            <div className="flex flex-wrap items-center gap-2 mt-2.5">
+            <div className="flex flex-wrap items-center gap-2 mt-2">
               {card.description && (
-                <div title="Has description" className="text-[var(--text-tertiary)]">
+                <div title="Has description" className="text-[#636366]">
                   <AlignLeft className="w-3.5 h-3.5" strokeWidth={2} />
                 </div>
               )}
 
               {totalChecklistItems > 0 && (
                 <div
-                  className={`flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-md apple-transition ${
+                  className={`flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${
                     isChecklistComplete
-                      ? 'bg-[#30d158]/15 text-[#30d158]'
+                      ? 'bg-[#30d158]/20 text-[#30d158]'
                       : completedChecklistItems > 0
-                        ? 'bg-[var(--accent-light)] text-[var(--accent)]'
-                        : 'text-[var(--text-tertiary)]'
+                        ? 'bg-[#0a84ff]/15 text-[#0a84ff]'
+                        : 'text-[#636366]'
                   }`}
-                  title="Checklist"
                 >
                   <CheckSquare className="w-3 h-3" strokeWidth={2.5} />
                   <span className="tabular-nums">{completedChecklistItems}/{totalChecklistItems}</span>
@@ -78,10 +75,7 @@ const BoardCard: React.FC<BoardCardProps> = ({ card, index, onClick }) => {
               )}
 
               {card.dueDate && (
-                <div
-                  className="flex items-center gap-1 text-[11px] font-medium text-[var(--text-secondary)] px-1.5 py-0.5 rounded-md bg-[var(--surface-secondary)]"
-                  title="Due date"
-                >
+                <div className="flex items-center gap-1 text-[11px] font-medium text-[#a1a1a6] px-1.5 py-0.5 rounded-md bg-white/[0.06]">
                   <Calendar className="w-3 h-3" strokeWidth={2} />
                   <span>{format(new Date(card.dueDate), 'MMM d')}</span>
                 </div>
@@ -91,12 +85,12 @@ const BoardCard: React.FC<BoardCardProps> = ({ card, index, onClick }) => {
 
           {/* Members */}
           {card.members && card.members.length > 0 && (
-            <div className="flex justify-end mt-2.5">
+            <div className="flex justify-end mt-2">
               <div className="flex -space-x-1.5">
                 {card.members.map((member: any, idx: number) => (
                   <div
                     key={idx}
-                    className="w-6 h-6 rounded-full border-[1.5px] border-white bg-gradient-to-br from-[#667eea] to-[#764ba2] flex items-center justify-center text-[10px] text-white font-semibold shadow-sm"
+                    className="w-6 h-6 rounded-full border-[1.5px] border-[#2c2c2e] bg-gradient-to-br from-[#5e5ce6] to-[#bf5af2] flex items-center justify-center text-[10px] text-white font-semibold"
                     title={member.name || 'Member'}
                   >
                     {member.avatarUrl ? (
@@ -125,8 +119,8 @@ function getLabelColor(color: string) {
     blue: '#0a84ff',
     sky: '#64d2ff',
     lime: '#30d158',
-    pink: '#ff375f',
-    black: '#636366',
+    pink: '#ff2d55',
+    black: '#8e8e93',
   };
   return colors[color] || color;
 }

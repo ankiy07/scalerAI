@@ -80,17 +80,14 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
 
       const updatedCards = cards.map(card => {
         if (card._id === removed._id) return removed;
-
         if (card.listId === sourceListId) {
           const index = sourceListCards.findIndex(c => c._id === card._id);
           if (index !== -1) return { ...card, order: index };
         }
-
         if (card.listId === destListId) {
           const index = destListCards.findIndex(c => c._id === card._id);
           if (index !== -1) return { ...card, order: index };
         }
-
         return card;
       });
 
@@ -159,40 +156,39 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
   return (
     <div
       className="flex flex-col h-screen overflow-hidden"
-      style={{ backgroundColor: board.background || '#0071e3' }}
+      style={{ backgroundColor: board.background || '#0a84ff' }}
     >
-      {/* Board Nav — frosted glass Apple style */}
-      <nav className="h-14 flex items-center px-5 justify-between glass-dark border-b border-white/[0.08] text-white">
+      {/* Board Nav */}
+      <nav className="h-[52px] flex items-center px-5 justify-between bg-black/80 backdrop-blur-xl text-white border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-2 hover:bg-white/10 px-2.5 py-1.5 rounded-lg apple-transition text-white/80 hover:text-white"
+            className="flex items-center gap-1.5 hover:bg-white/10 px-2 py-1.5 rounded-lg apple-transition text-white/70 hover:text-white"
           >
             <ChevronLeft className="w-4 h-4" strokeWidth={2.5} />
-            <LayoutGrid className="w-4 h-4" strokeWidth={2} />
+            <LayoutGrid className="w-3.5 h-3.5" strokeWidth={2} />
           </Link>
 
-          <div className="w-px h-5 bg-white/15" />
+          <div className="w-px h-4 bg-white/12" />
 
-          <h1 className="font-semibold text-[16px] tracking-tight px-2 py-1 rounded-lg hover:bg-white/10 apple-transition cursor-pointer">
+          <h1 className="font-semibold text-[15px] tracking-[-0.02em] px-2 py-1 rounded-lg hover:bg-white/10 apple-transition cursor-pointer">
             {board.title}
           </h1>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Search Bar */}
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/50" strokeWidth={2} />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" strokeWidth={2} />
             <input
               type="text"
               placeholder="Search cards…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-white/10 hover:bg-white/15 focus:bg-white/95 focus:text-[var(--text-primary)] outline-none border border-white/10 focus:border-[var(--accent)] py-1.5 pl-9 pr-3 rounded-lg text-[13px] font-medium placeholder-white/50 focus:placeholder-[var(--text-tertiary)] apple-transition w-44 focus:w-60 focus:shadow-lg"
+              className="bg-white/8 hover:bg-white/12 focus:bg-[#1c1c1e] focus:text-[#f5f5f7] outline-none border border-white/8 focus:border-[#0a84ff] py-1.5 pl-9 pr-3 rounded-lg text-[13px] font-medium placeholder-white/40 focus:placeholder-[#636366] apple-transition w-44 focus:w-60"
             />
           </div>
 
-          <button className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-lg text-[13px] font-medium apple-transition border border-white/10">
+          <button className="flex items-center gap-1.5 bg-white/8 hover:bg-white/12 px-3 py-1.5 rounded-lg text-[13px] font-medium apple-transition border border-white/8">
             <SlidersHorizontal className="w-3.5 h-3.5" strokeWidth={2} />
             <span>Filters</span>
           </button>
@@ -207,7 +203,7 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className="flex gap-4 h-full items-start"
+                className="flex gap-3 h-full items-start"
               >
                 {lists.map((list, index) => (
                   <BoardList
@@ -231,29 +227,29 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
                       value={newListTitle}
                       onChange={(e) => setNewListTitle(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleAddList()}
-                      className="w-full p-2 mb-2 rounded-lg border border-[var(--border-strong)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20 outline-none text-[14px] text-[var(--text-primary)] font-medium bg-[var(--surface)]"
+                      className="w-full p-2 mb-2 rounded-lg border border-white/[0.1] focus:border-[#0a84ff] focus:ring-2 focus:ring-[#0a84ff]/20 outline-none text-[13px] text-[#f5f5f7] font-medium bg-[#2c2c2e]"
                     />
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleAddList}
-                        className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-3 py-1.5 rounded-lg font-medium text-[13px] apple-transition shadow-sm active:scale-95"
+                        className="bg-[#0a84ff] hover:bg-[#409cff] text-white px-3 py-1.5 rounded-lg font-medium text-[13px] apple-transition active:scale-95"
                       >
                         Add list
                       </button>
                       <button
                         onClick={() => setIsAddingList(false)}
-                        className="p-1.5 rounded-lg hover:bg-[var(--surface-secondary)] apple-transition"
+                        className="p-1.5 rounded-lg hover:bg-white/[0.06] apple-transition"
                       >
-                        <X className="w-4 h-4 text-[var(--text-tertiary)]" />
+                        <X className="w-4 h-4 text-[#636366]" />
                       </button>
                     </div>
                   </div>
                 ) : (
                   <button
                     onClick={() => setIsAddingList(true)}
-                    className="min-w-[292px] bg-white/12 hover:bg-white/18 backdrop-blur-lg text-white/90 hover:text-white p-3.5 rounded-2xl flex items-center gap-2.5 apple-transition h-fit font-medium text-[14px] text-left border border-white/[0.08] hover:border-white/15 shadow-sm"
+                    className="min-w-[292px] bg-white/10 hover:bg-white/15 backdrop-blur-md text-white/90 hover:text-white p-3.5 rounded-2xl flex items-center gap-2 apple-transition h-fit font-medium text-[13px] text-left border border-white/[0.06] hover:border-white/12"
                   >
-                    <Plus className="w-5 h-5" strokeWidth={2} />
+                    <Plus className="w-4.5 h-4.5" strokeWidth={2} />
                     <span>Add another list</span>
                   </button>
                 )}
