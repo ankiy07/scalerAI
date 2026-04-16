@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, SlidersHorizontal } from 'lucide-react';
 
 interface ContextualHUDProps {
   onAddList: () => void;
@@ -25,6 +25,14 @@ const ContextualHUD: React.FC<ContextualHUDProps> = ({
         title="Search cards"
       >
         <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+      </button>
+      
+      <button
+        onClick={onOpenFilters}
+        className="p-2 sm:p-3 rounded-full hover:bg-black/5 text-on-surface-variant transition-colors"
+        title="Filter cards"
+      >
+        <SlidersHorizontal className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
 
       <div className="w-px h-5 sm:h-6 bg-outline-variant/20 mx-0.5 sm:mx-1" />

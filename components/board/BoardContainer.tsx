@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import BoardList from './BoardList';
 import CardDetailModal from '../modals/CardDetailModal';
 import ContextualHUD from './ContextualHUD';
-import { Archive, ChevronLeft, RotateCcw, Search, Trash2, X } from 'lucide-react';
+import { Archive, ChevronLeft, RotateCcw, Search, Trash2, X, Filter, Check, Calendar, Tag, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRef } from 'react';
 
@@ -28,6 +28,48 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
   const [isLoadingArchivedCards, setIsLoadingArchivedCards] = useState(false);
   const [archivedSearchQuery, setArchivedSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [activeFilters, setActiveFilters] = useState<{
+    members: string[];
+    labels: string[];
+    dueDate: 'no-date' | 'has-date' | 'overdue' | null;
+  }>({ members: [], labels: [], dueDate: null });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/users');
+        if (res.ok) {
+          const data = await res.json();
+          setAllUsers(data);
+        }
+      } catch (err) {}
+    };
+    fetchUsers();
+  }, []);
+
+  const boardLabels = useMemo(() => {
+    const labelMap = new Map<string, string>();
+    cards.forEach(c => {
+      c.labels?.forEach((l: any) => {
+        if (!labelMap.has(l.color) || l.text) {
+          labelMap.set(l.color, l.text || labelMap.get(l.color) || '');
+        }
+      });
+    });
+    return Array.from(labelMap.entries()).map(([color, text]) => ({ color, text }));
+  }, [cards]);
+
+  const getLabelColor = (color: string) => {
+    const colors: Record<string, string> = {
+      green: '#30d158', yellow: '#ffd60a', orange: '#ff9f0a', red: '#ff375f',
+      purple: '#bf5af2', blue: '#0a84ff', sky: '#64d2ff', lime: '#30d158',
+      pink: '#ff2d55', black: '#8e8e93',
+    };
+    return colors[color] || color;
+  };
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, type } = result;
@@ -245,9 +287,32 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
       }));
   }, [archivedCards, archivedSearchQuery, lists]);
 
-  const filteredCards = cards.filter(card =>
-    card.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCards = cards.filter(card => {
+    if (searchQuery && !card.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    
+    if (activeFilters.members.length > 0) {
+      const hasMember = card.members?.some((m: any) => {
+        const id = typeof m === 'string' ? m : m._id;
+        return activeFilters.members.includes(id);
+      });
+      if (!hasMember) return false;
+    }
+
+    if (activeFilters.labels.length > 0) {
+      const hasLabel = card.labels?.some((l: any) => activeFilters.labels.includes(l.color));
+      if (!hasLabel) return false;
+    }
+
+    if (activeFilters.dueDate) {
+      if (activeFilters.dueDate === 'no-date' && card.dueDate) return false;
+      if (activeFilters.dueDate === 'has-date' && !card.dueDate) return false;
+      if (activeFilters.dueDate === 'overdue') {
+        if (!card.dueDate || new Date(card.dueDate).getTime() >= Date.now()) return false;
+      }
+    }
+
+    return true;
+  });
 
   return (
     <div
@@ -367,9 +432,137 @@ const BoardContainer: React.FC<BoardContainerProps> = ({ board, initialLists, in
       <ContextualHUD 
         onAddList={() => setIsAddingList(true)}
         onSearchFocus={focusSearch}
-        onOpenFilters={() => {}}
+        onOpenFilters={() => setIsFilterPanelOpen(true)}
         boardTitle={board.title}
       />
+
+      {isFilterPanelOpen && (
+        <div className="fixed inset-0 z-[90]">
+          <div
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={() => setIsFilterPanelOpen(false)}
+          />
+          <aside className="absolute right-0 top-0 h-full w-full sm:max-w-md lg:max-w-sm border-l border-outline-variant/20 bg-white shadow-2xl flex flex-col animate-slide-left">
+            <div className="flex items-center justify-between border-b border-outline-variant/15 px-6 py-5">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-outline">Refine View</p>
+                <h2 className="mt-1 text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+                  <Filter className="w-5 h-5 text-tertiary" /> Filters
+                </h2>
+              </div>
+              <button
+                onClick={() => setIsFilterPanelOpen(false)}
+                className="rounded-xl p-2 text-on-surface-variant transition-colors hover:bg-black/5 hover:text-on-surface"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-8">
+              {/* Reset Headers */}
+              {(activeFilters.members.length > 0 || activeFilters.labels.length > 0 || activeFilters.dueDate) && (
+                <button
+                  onClick={() => setActiveFilters({ members: [], labels: [], dueDate: null })}
+                  className="w-full py-2.5 bg-error/10 hover:bg-error/20 text-error rounded-xl text-[12px] font-black tracking-widest uppercase transition-colors"
+                >
+                  Clear All Filters
+                </button>
+              )}
+
+              {/* Members Filter */}
+              <div className="space-y-3">
+                <h3 className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                  <UserIcon className="w-4 h-4" /> Members
+                </h3>
+                <div className="space-y-1">
+                  {allUsers.map(user => {
+                    const isSelected = activeFilters.members.includes(user._id);
+                    return (
+                      <button
+                        key={user._id}
+                        onClick={() => setActiveFilters(prev => ({
+                          ...prev,
+                          members: isSelected ? prev.members.filter(m => m !== user._id) : [...prev.members, user._id]
+                        }))}
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-surface-container-low transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-surface-container-high flex flex-shrink-0 items-center justify-center text-[12px] font-bold">
+                            {user.name.charAt(0)}
+                          </div>
+                          <span className="text-[14px] font-medium text-on-surface">{user.name}</span>
+                        </div>
+                        {isSelected && <Check className="w-4 h-4 text-tertiary" />}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Labels Filter */}
+              {boardLabels.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                    <Tag className="w-4 h-4" /> Labels
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {boardLabels.map((label, idx) => {
+                      const isSelected = activeFilters.labels.includes(label.color);
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveFilters(prev => ({
+                            ...prev,
+                            labels: isSelected ? prev.labels.filter(c => c !== label.color) : [...prev.labels, label.color]
+                          }))}
+                          className={`relative flex items-center h-8 rounded-lg overflow-hidden transition-all ${isSelected ? 'ring-2 ring-tertiary ring-offset-1 scale-[0.98]' : 'hover:scale-[0.98]'}`}
+                          style={{ backgroundColor: getLabelColor(label.color) }}
+                        >
+                          <span className="px-3 text-white text-[11px] font-black uppercase tracking-widest truncate mix-blend-color-dodge">
+                            {label.text || label.color}
+                          </span>
+                          {isSelected && (
+                            <div className="absolute inset-y-0 right-2 flex items-center text-white mix-blend-color-dodge">
+                              <Check className="w-4 h-4" />
+                            </div>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Due Date Filter */}
+              <div className="space-y-3">
+                <h3 className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                  <Calendar className="w-4 h-4" /> Due Date
+                </h3>
+                <div className="space-y-2">
+                  {[
+                    { val: 'no-date', label: 'No due date' },
+                    { val: 'has-date', label: 'Has due date' },
+                    { val: 'overdue', label: 'Overdue' }
+                  ].map(opt => (
+                    <button
+                      key={opt.val}
+                      onClick={() => setActiveFilters(prev => ({
+                        ...prev,
+                        dueDate: prev.dueDate === opt.val ? null : opt.val as any
+                      }))}
+                      className={`w-full flex items-center justify-between p-3 rounded-xl transition-all border ${activeFilters.dueDate === opt.val ? 'bg-tertiary/10 border-tertiary text-tertiary' : 'bg-surface-container-low border-outline-variant/10 text-on-surface hover:border-outline-variant/30'}`}
+                    >
+                      <span className="text-[13px] font-bold">{opt.label}</span>
+                      {activeFilters.dueDate === opt.val && <Check className="w-4 h-4" strokeWidth={3} />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </aside>
+        </div>
+      )}
 
       {isArchivePanelOpen && (
         <div className="fixed inset-0 z-[90]">
