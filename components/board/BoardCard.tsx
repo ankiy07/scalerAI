@@ -24,73 +24,73 @@ const BoardCard: React.FC<BoardCardProps> = ({ card, index, onClick }) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           onClick={onClick}
-          className={`kanban-card group ${
-            snapshot.isDragging ? 'rotate-[2deg] shadow-2xl scale-[1.02]' : ''
+          className={`kanban-card group border-white/60 ${
+            snapshot.isDragging ? 'rotate-[2deg] shadow-elevation scale-[1.02] border-white' : ''
           }`}
         >
+          {/* Bezel Glint (Top Edge) */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-white/40 rounded-t-lg" />
           {/* Labels */}
           {card.labels && card.labels.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-2">
+            <div className="flex flex-wrap gap-1.5 mb-3">
               {card.labels.map((label: any, idx: number) => (
                 <div
                   key={idx}
-                  className="h-[6px] w-10 rounded-full apple-transition group-hover:h-5 group-hover:w-auto group-hover:px-2 group-hover:flex group-hover:items-center"
+                  className="px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-white"
                   style={{ backgroundColor: getLabelColor(label.color) }}
                   title={label.text}
                 >
-                  <span className="hidden group-hover:inline text-[10px] font-semibold text-white leading-none whitespace-nowrap">
-                    {label.text}
-                  </span>
+                  {label.text}
                 </div>
               ))}
             </div>
           )}
 
-          <h3 className="text-[13px] text-[#f5f5f7] font-medium leading-snug tracking-[-0.01em]">
+          <h3 className="text-[14px] text-on-surface font-bold leading-tight tracking-tight mb-3">
             {card.title}
           </h3>
 
           {/* Badges */}
           {(card.description || totalChecklistItems > 0 || card.dueDate) && (
-            <div className="flex flex-wrap items-center gap-2 mt-2">
-              {card.description && (
-                <div title="Has description" className="text-[#636366]">
-                  <AlignLeft className="w-3.5 h-3.5" strokeWidth={2} />
-                </div>
-              )}
-
-              {totalChecklistItems > 0 && (
-                <div
-                  className={`flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${
-                    isChecklistComplete
-                      ? 'bg-[#30d158]/20 text-[#30d158]'
-                      : completedChecklistItems > 0
-                        ? 'bg-[#0a84ff]/15 text-[#0a84ff]'
-                        : 'text-[#636366]'
-                  }`}
-                >
-                  <CheckSquare className="w-3 h-3" strokeWidth={2.5} />
-                  <span className="tabular-nums">{completedChecklistItems}/{totalChecklistItems}</span>
-                </div>
-              )}
-
-              {card.dueDate && (
-                <div className="flex items-center gap-1 text-[11px] font-medium text-[#a1a1a6] px-1.5 py-0.5 rounded-md bg-white/[0.06]">
-                  <Calendar className="w-3 h-3" strokeWidth={2} />
-                  <span>{format(new Date(card.dueDate), 'MMM d')}</span>
-                </div>
-              )}
+            <div className="flex flex-wrap items-center gap-3 pt-3 mt-1 border-t border-outline-variant/10">
+              <div className="flex bg-background/50 px-2 py-1 rounded-lg border border-outline-variant/5 shadow-inner-soft gap-2.5">
+                {card.description && (
+                  <div title="Has description" className="text-on-surface-variant/60">
+                    <AlignLeft className="w-3.5 h-3.5" strokeWidth={3} />
+                  </div>
+                )}
+  
+                {totalChecklistItems > 0 && (
+                  <div
+                    className={`flex items-center gap-1 text-[11px] font-bold ${
+                      isChecklistComplete
+                        ? 'text-tertiary'
+                        : 'text-on-surface-variant/60'
+                    }`}
+                  >
+                    <CheckSquare className="w-3.5 h-3.5" strokeWidth={3} />
+                    <span className="tabular-nums">{completedChecklistItems}/{totalChecklistItems}</span>
+                  </div>
+                )}
+  
+                {card.dueDate && (
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-on-surface-variant/60">
+                    <Calendar className="w-3.5 h-3.5" strokeWidth={3} />
+                    <span>{format(new Date(card.dueDate), 'MMM d')}</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {/* Members */}
           {card.members && card.members.length > 0 && (
-            <div className="flex justify-end mt-2">
-              <div className="flex -space-x-1.5">
+            <div className="flex justify-end mt-4">
+              <div className="flex -space-x-2">
                 {card.members.map((member: any, idx: number) => (
                   <div
                     key={idx}
-                    className="w-6 h-6 rounded-full border-[1.5px] border-[#2c2c2e] bg-gradient-to-br from-[#5e5ce6] to-[#bf5af2] flex items-center justify-center text-[10px] text-white font-semibold"
+                    className="w-7 h-7 rounded-full border-2 border-surface-container-lowest bg-surface-container-high flex items-center justify-center text-[10px] text-on-surface font-black"
                     title={member.name || 'Member'}
                   >
                     {member.avatarUrl ? (

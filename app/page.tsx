@@ -11,48 +11,58 @@ export default async function Home() {
   const boards = await Board.find({}).sort({ createdAt: -1 });
 
   return (
-    <main className="min-h-screen bg-black">
+    <main className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="h-[52px] bg-[#1c1c1e] border-b border-white/[0.06] sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto h-full flex items-center justify-between px-6">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0a84ff] to-[#5e5ce6] flex items-center justify-center">
-              <LayoutGrid className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+      <nav className="h-[56px] sm:h-[64px] lg:h-[72px] bg-white/60 backdrop-blur-xl border-b border-outline-variant/10 sticky top-0 z-50 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-on-surface">Workspace</h1>
             </div>
-            <span className="font-semibold text-[15px] text-[#f5f5f7] tracking-[-0.02em]">
-              Boards
-            </span>
           </div>
-          <div className="flex items-center">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#5e5ce6] to-[#bf5af2] flex items-center justify-center text-white text-[11px] font-semibold">
-              A
-            </div>
+        </div>
+        <div className="flex items-center">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-surface-container-high border-2 border-white shadow-sm flex items-center justify-center text-on-surface text-[12px] sm:text-[14px] font-black uppercase tracking-tight">
+            A
           </div>
         </div>
       </nav>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="flex items-center gap-2 mb-5">
-          <Clock className="w-4 h-4 text-[#636366]" strokeWidth={2} />
-          <h2 className="text-[12px] font-semibold text-[#636366] uppercase tracking-[0.06em]">
-            Recently viewed
-          </h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div className="flex items-center justify-between mb-6 sm:mb-8 lg:mb-12">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center">
+              <LayoutGrid className="w-4 h-4 text-on-surface-variant" strokeWidth={2.5} />
+            </div>
+            <h2 className="text-[11px] font-black text-outline uppercase tracking-widest leading-none">
+              All Boards
+            </h2>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {boards.map((board) => (
             <Link
               key={board._id.toString()}
               href={`/board/${board._id}`}
-              className="group relative h-[100px] rounded-xl p-4 apple-transition flex flex-col justify-between overflow-hidden hover:scale-[1.02] active:scale-[0.98]"
-              style={{ backgroundColor: board.background || '#0a84ff' }}
+              className="group relative h-[150px] sm:h-[165px] lg:h-[180px] bg-white rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] p-5 sm:p-6 lg:p-8 transition-all duration-300 flex flex-col items-center justify-center overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_24px_50px_rgba(0,0,0,0.08)] border border-outline-variant/10"
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 rounded-xl" />
-              <h3 className="relative text-white font-semibold text-[14px] leading-snug tracking-[-0.01em] drop-shadow-sm">
+              {/* Board Accent - Kept for visual flair */}
+              <div
+                className="absolute top-0 right-0 w-24 h-24 blur-3xl opacity-20 -mr-8 -mt-8 rounded-full"
+                style={{ backgroundColor: board.background || '#0a84ff' }}
+              />
+
+              {/* Small Dot Indicator - Absolute positioned so it doesn't mess with centering */}
+              <div
+                className="absolute top-6 left-6 w-3 h-3 rounded-full"
+                style={{ backgroundColor: board.background || '#0a84ff' }}
+              />
+
+              <h3 className="text-base sm:text-lg lg:text-xl font-bold text-on-surface tracking-tight leading-tight group-hover:text-tertiary transition-colors text-center">
                 {board.title}
               </h3>
-              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/[0.08] apple-transition rounded-xl" />
             </Link>
           ))}
 

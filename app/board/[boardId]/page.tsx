@@ -24,7 +24,7 @@ export default async function BoardPage({
     // Fetch lists and cards
     const [lists, cards] = await Promise.all([
       List.find({ boardId }).sort({ order: 1 }),
-      Card.find({ boardId }).sort({ order: 1 }).populate('members'),
+      Card.find({ boardId, isArchived: { $ne: true } }).sort({ order: 1 }).populate('members'),
     ]);
 
     // Serialize MongoDB objects to plain objects for the client

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Plus, X, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const BOARD_COLORS = [
@@ -52,46 +52,48 @@ const CreateBoardButton = () => {
 
   if (isCreating) {
     return (
-      <div className="h-[100px] rounded-xl bg-[#1c1c1e] p-4 shadow-[0_2px_12px_rgba(0,0,0,0.4)] border border-white/[0.08] animate-scale-in flex flex-col justify-between">
-        <input
-          autoFocus
-          type="text"
-          placeholder="Board title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleCreate()}
-          className="w-full bg-transparent text-[14px] font-semibold text-[#f5f5f7] placeholder-[#636366] focus:outline-none"
-          disabled={isLoading}
-        />
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            {BOARD_COLORS.slice(0, 6).map((color) => (
+      <div className="h-[150px] sm:h-[165px] lg:h-[180px] rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] bg-white p-5 sm:p-6 lg:p-8 shadow-2xl border border-outline-variant/10 animate-scale-in flex flex-col justify-between">
+        <div className="space-y-4">
+          <div className="flex flex-col">
+            <span className="text-[10px] uppercase tracking-widest font-black text-outline">New Project</span>
+            <input
+              autoFocus
+              type="text"
+              placeholder="Enter board title..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleCreate()}
+              className="w-full bg-transparent text-base sm:text-lg lg:text-xl font-bold text-on-surface placeholder-on-surface-variant/40 focus:outline-none tracking-tight"
+              disabled={isLoading}
+            />
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {BOARD_COLORS.slice(0, 8).map((color) => (
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}
-                className={`w-5 h-5 rounded-full apple-transition ${
-                  selectedColor === color ? 'ring-2 ring-offset-1 ring-offset-[#1c1c1e] ring-[#0a84ff] scale-110' : 'hover:scale-110'
-                }`}
+                className={`w-6 h-6 rounded-full transition-all ${selectedColor === color ? 'ring-2 ring-primary ring-offset-2 scale-110 shadow-md' : 'hover:scale-110 opacity-70 hover:opacity-100'
+                  }`}
                 style={{ backgroundColor: color }}
               />
             ))}
           </div>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => { setIsCreating(false); setTitle(''); }}
-              className="p-1 rounded-md hover:bg-white/[0.06] apple-transition"
-            >
-              <X className="w-4 h-4 text-[#636366]" />
-            </button>
-            <button
-              onClick={handleCreate}
-              disabled={isLoading || !title.trim()}
-              className="bg-[#0a84ff] hover:bg-[#409cff] disabled:opacity-40 text-white px-3 py-1 rounded-lg font-medium text-[12px] apple-transition active:scale-95 flex items-center gap-1.5"
-            >
-              {isLoading && <Loader2 className="w-3 h-3 animate-spin" />}
-              {isLoading ? 'Creating' : 'Create'}
-            </button>
-          </div>
+        </div>
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant/5">
+          <button
+            onClick={() => { setIsCreating(false); setTitle(''); }}
+            className="px-6 py-2.5 rounded-[16px] font-bold text-on-surface-variant text-[11px] uppercase tracking-widest hover:bg-black/5 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreate}
+            disabled={isLoading || !title.trim()}
+            className="btn-primary-gradient px-8 py-2.5 rounded-[16px] text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-tertiary/20"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Plus className="w-4 h-4 text-white" strokeWidth={3} />}
+            <span>{isLoading ? 'Creating' : 'Start Board'}</span>
+          </button>
         </div>
       </div>
     );
@@ -100,10 +102,15 @@ const CreateBoardButton = () => {
   return (
     <button
       onClick={() => setIsCreating(true)}
-      className="h-[100px] rounded-xl bg-[#1c1c1e]/60 hover:bg-[#1c1c1e] apple-transition p-4 flex items-center justify-center gap-2 text-[#636366] hover:text-[#a1a1a6] font-medium text-[13px] border border-dashed border-white/[0.1] hover:border-[#0a84ff]/50 hover:text-[#0a84ff] active:scale-[0.98]"
+      className="h-[150px] sm:h-[165px] lg:h-[180px] rounded-[24px] sm:rounded-[28px] lg:rounded-[32px] bg-surface-container-low hover:bg-surface-container-high transition-all duration-500 p-5 sm:p-6 lg:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 text-on-surface-variant hover:text-tertiary border border-dashed border-outline-variant hover:border-tertiary/50 group"
     >
-      <Plus className="w-4 h-4" strokeWidth={2} />
-      <span>Create new board</span>
+      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-sm group-hover:scale-110 transition-all duration-500 group-hover:rotate-90">
+        <Plus className="w-6 h-6" strokeWidth={2.5} />
+      </div>
+      <div className="flex flex-col items-center">
+        <span className="font-bold text-[14px] tracking-tight">Create Workspace</span>
+        <span className="text-[11px] font-medium opacity-60">Start a new project board</span>
+      </div>
     </button>
   );
 };

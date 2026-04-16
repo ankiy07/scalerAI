@@ -13,6 +13,7 @@ export interface ILabel {
 export interface ICard extends Document {
   title: string;
   description: string;
+  isArchived: boolean;
   order: number;
   listId: mongoose.Types.ObjectId;
   boardId: mongoose.Types.ObjectId;
@@ -38,6 +39,7 @@ const CardSchema: Schema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, default: '' },
+    isArchived: { type: Boolean, default: false },
     order: { type: Number, required: true },
     listId: { type: Schema.Types.ObjectId, ref: 'List', required: true },
     boardId: { type: Schema.Types.ObjectId, ref: 'Board', required: true },

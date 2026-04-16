@@ -2,24 +2,51 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #000000;
-  --bg-raised: #1c1c1e;
-  --bg-elevated: #2c2c2e;
-  --bg-hover: #3a3a3c;
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-tertiary: #636366;
-  --accent: #0a84ff;
-  --accent-hover: #409cff;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.15);
+  --background: #f1f3f5;
+  --surface: #f1f3f5;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #e8ebed;
+  --surface-container: #dfe2e5;
+  --surface-container-high: #d5d9dd;
+  --surface-container-highest: #ccd1d5;
+  --surface-bright: #ffffff;
+  
+  --on-background: #1a1c1e;
+  --on-surface: #1a1c1e;
+  --on-surface-variant: #44474e;
+  
+  --primary: #44474e;
+  --primary-container: #dce2e9;
+  --secondary: #565f67;
+  --secondary-container: #dae3eb;
+  --tertiary: #0061a4;
+  --tertiary-container: #d1e4ff;
+  
+  --outline: #74777f;
+  --outline-variant: #c4c7cf;
+  --error: #ba1a1a;
+  
+  /* Lumina Elevation System */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.02), 0 4px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 4px rgba(0,0,0,0.02), 0 12px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 8px rgba(0,0,0,0.02), 0 24px 48px rgba(0,0,0,0.08);
+  --shadow-xl: 0 8px 16px rgba(0,0,0,0.03), 0 40px 80px rgba(0,0,0,0.12);
+  --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.02);
+  
+  /* Lumina specific */
+  --round-xl: 32px;
+  --round-lg: 20px;
+  --round-md: 14px;
+  --round-sm: 10px;
 }
 
 @theme inline {
-  --color-background: var(--bg);
-  --color-foreground: var(--text-primary);
+  --color-background: var(--background);
+  --color-foreground: var(--on-background);
   --font-sans: 'Inter', var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --shadow-lumina: var(--shadow-md);
+  --shadow-elevation: var(--shadow-xl);
 }
 
 * {
@@ -28,14 +55,14 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text-primary);
+  background: var(--background);
+  color: var(--on-background);
   font-family: 'Inter', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 /* Scrollbar */
@@ -49,56 +76,139 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.08);
   border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.board-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.board-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 /* Kanban List */
 .kanban-list {
-  background: var(--bg-raised);
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  width: 292px;
-  min-width: 292px;
-  max-height: 100%;
+  background: var(--surface-container-low);
+  border-radius: var(--round-xl);
+  width: 100%;
+  min-width: 0;
+  max-height: none;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: box-shadow 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.kanban-list:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+@media (min-width: 640px) {
+  .kanban-list {
+    width: 290px;
+    min-width: 290px;
+    max-height: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .kanban-list {
+    width: 300px;
+    min-width: 300px;
+  }
 }
 
 /* Kanban Card */
 .kanban-card {
-  background: var(--bg-elevated);
-  border-radius: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  margin-bottom: 6px;
+  background: var(--surface-container-lowest);
+  border-radius: var(--round-lg);
+  padding: 14px;
+  margin-bottom: 10px;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .kanban-card {
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .kanban-card {
+    padding: 20px;
+    margin-bottom: 16px;
+  }
 }
 
 .kanban-card:hover {
-  background: var(--bg-hover);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(255, 255, 255, 1);
+}
+
+/* Disable hover transform on touch devices to avoid stuck states */
+@media (hover: none) {
+  .kanban-card:hover {
+    transform: none;
+  }
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* HUD Bar */
+.hud-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 56px;
+  padding: 0 16px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-xl);
+  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+@media (min-width: 640px) {
+  .hud-bar {
+    bottom: 24px;
+    height: 64px;
+    padding: 0 24px;
+    gap: 12px;
+    border-radius: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hud-bar {
+    bottom: 32px;
+    height: 72px;
+    padding: 0 32px;
+    gap: 16px;
+    border-radius: 36px;
+  }
+}
+
+/* Blue Gradient Button */
+.btn-primary-gradient {
+  background: linear-gradient(145deg, var(--tertiary), var(--tertiary-container));
+  color: white;
+  font-weight: 600;
+  border-radius: var(--round-xl);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-gradient:hover {
+  filter: saturate(1.2);
   transform: translateY(-1px);
 }
 
@@ -149,4 +259,65 @@ body {
 
 .animate-scale-in {
   animation: scaleIn 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ===== RESPONSIVE / MOBILE UTILITIES ===== */
+
+/* Safe Area Insets for notched/island devices (iPhone, etc.) */
+.hud-bar {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 639px) {
+  .hud-bar {
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Momentum-based smooth scrolling for horizontal board scroll */
+.board-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+}
+
+.board-scroll::-webkit-scrollbar {
+  display: none; /* Hide scrollbar on mobile for cleaner look */
+}
+
+@media (min-width: 1024px) {
+  .board-scroll::-webkit-scrollbar {
+    display: block;
+    height: 6px;
+  }
+}
+
+/* Prevent iOS zoom on input focus (requires 16px minimum font-size) */
+@media screen and (max-width: 639px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="datetime-local"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Responsive border-radius reduction */
+@media (max-width: 639px) {
+  :root {
+    --round-xl: 24px;
+    --round-lg: 16px;
+    --round-md: 12px;
+    --round-sm: 8px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  :root {
+    --round-xl: 28px;
+    --round-lg: 18px;
+    --round-md: 13px;
+    --round-sm: 9px;
+  }
 }
